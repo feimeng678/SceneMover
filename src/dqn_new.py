@@ -10246,21 +10246,22 @@ def train_comb_one_frame_add_action_all_reward_loss_details_failure_cases_reinfo
     
     test_configs_set = []
     item_num_list = [5,9,13,17]
-    with open('./test35_5.pkl','rb') as fp:
-        test_configs = pickle.load(fp)
-        test_configs_set.append(test_configs)
 
-    with open('./test35_9.pkl','rb') as fp:
-        test_configs = pickle.load(fp)
-        test_configs_set.append(test_configs)
-    
-    with open('./test35_13.pkl','rb') as fp:
-        test_configs = pickle.load(fp)
-        test_configs_set.append(test_configs)
-    
-    with open('test35_17.pkl','rb') as fp:
-        test_configs = pickle.load(fp)
-        test_configs_set.append(test_configs)
+    # with open('./test35_5.pkl','rb') as fp:
+    #     test_configs = pickle.load(fp)
+    #     test_configs_set.append(test_configs)
+    #
+    # with open('./test35_9.pkl','rb') as fp:
+    #     test_configs = pickle.load(fp)
+    #     test_configs_set.append(test_configs)
+    #
+    # with open('./test35_13.pkl','rb') as fp:
+    #     test_configs = pickle.load(fp)
+    #     test_configs_set.append(test_configs)
+    #
+    # with open('test35_17.pkl','rb') as fp:
+    #     test_configs = pickle.load(fp)
+    #     test_configs_set.append(test_configs)
 
 
     tensorboard_path = "tensorboard/20190109_1/"
@@ -15163,7 +15164,7 @@ def test_simple_MCTS():
 
 def test_simple_MCTS_transpose():
     from MCTS import MCT
-    from visulization import convert_to_img
+    from src.visualization import convert_to_img
     from PIL import Image
     from env import ENV_scene_new_action_pre_state_penalty_conflict_heuristic_transpose
     gamma = 0.95
@@ -16329,7 +16330,7 @@ if __name__ == '__main__':
 
     # test_new_action_one_frame_add_action_all_rewards_MCTS()
     # test_naive_agent()
-    test_simple_MCTS_transpose()
+    # test_simple_MCTS_transpose()
     # test_new_action_one_frame_add_action_all_rewards_MCTS_with_naive_agent()
     # train_comb_one_frame_add_action_all_reward_loss_details_failure_cases_reinforce_conflict_large()
     # train_comb_one_frame_add_action_all_reward_loss_details_failure_cases_reinforce_conflict_large_most_12()
@@ -16338,7 +16339,7 @@ if __name__ == '__main__':
     # train_comb_one_frame_add_action_all_reward_loss_details_failure_cases_reinforce_conflict_large_most_17_memory_saving_random_index()
     # train_comb_one_frame_add_action_all_reward_loss_details_failure_cases_reinforce_conflict_large_most_17_memory_saving_random_index_NN11()
     # train_comb_one_frame_add_action_all_reward_loss_details_failure_cases_reinforce_conflict_large_most_17_memory_saving_random_index_NN12()
-    # train_comb_one_frame_add_action_all_reward_loss_details_failure_cases_reinforce_conflict_large_most_25_memory_saving_random_index_NN12()
+    train_comb_one_frame_add_action_all_reward_loss_details_failure_cases_reinforce_conflict_large_most_25_memory_saving_random_index_NN12()
     
     # test_simple_MCTS_transpose()
     # evaluate_nn()

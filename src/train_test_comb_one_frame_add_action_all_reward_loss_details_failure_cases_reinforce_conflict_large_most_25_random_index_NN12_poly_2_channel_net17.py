@@ -5,7 +5,57 @@ from env import ENV_scene_new_action_pre_state_penalty_conflict_heuristic_transp
 from copy import deepcopy
 import time
 from lstm import DQNetwork17, DQNetwork17_eval
+from collections import deque
+import pickle
 
+
+class MemoryUp():
+    def __init__(self, path='./buffer', bunch=100, max_bunch=200):
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        self.buffer = deque(maxlen=1000)
+        # self.file_list = [file_ for file_ in os.listdir(path) if file_[-3:] = 'pkl']
+        self.num = len([file_ for file_ in os.listdir(path) if file_[-3:] == 'pkl'])
+        self.bunch = bunch
+        self.path = path
+        self.max_bunch = max_bunch
+        self.current = self.num
+
+    def add(self, experience):
+        self.buffer.append(experience)
+        if self.size() > self.bunch:
+            data = []
+            for i in range(self.bunch):
+                data.append(self.buffer.popleft())
+
+            with open(os.path.join(self.path, 'data_%d.pkl' % self.current), 'wb') as fp:
+                pickle.dump(data, fp)
+            print('data_%d.pkl' % self.current)
+            self.current = (self.current + 1) % self.max_bunch
+            self.num = max(self.num, self.current)
+
+    def sample(self, batch_size):
+        # buffer_size = len(self.buffer)
+        # index = np.random.choice(buffer_size,
+        #                         size = batch_size,
+        #                         replace = False)
+
+        # return [self.buffer[i] for i in index]
+        res = []
+        index = np.random.choice(self.num,
+                                 size=batch_size)
+
+        for i in index:
+            with open(os.path.join(self.path, 'data_%d.pkl' % i), 'rb') as fp:
+                data = pickle.load(fp)
+            id_ = np.random.choice(self.bunch)
+            res.append(data[id_])
+
+        return res
+
+    def size(self):
+        return len(self.buffer)
 
 
 def train_comb_one_frame_add_action_all_reward_loss_details_failure_cases_reinforce_conflict_large_most_25_random_index_NN12_poly_2_channel_net17():

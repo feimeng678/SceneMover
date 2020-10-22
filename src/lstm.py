@@ -619,7 +619,9 @@ class DQNetwork16_eval:
 
 
 class DQNetwork17:
-    def __init__(self, batch_size, state_size=[5,5,4], action_space=5, num_objects=5, learning_rate=0.0002, seq_len = 50, name='DQNetwork'):
+    #def __init__(self, batch_size, state_size=[5,5,4], action_space=5, num_objects=5, learning_rate=0.0002, seq_len = 50, name='DQNetwork'):
+    def __init__(self, batch_size, state_size=[64, 64, 2], action_space=5, num_objects=25, learning_rate=0.0002,seq_len=8, name='DQNetwork'):
+
         self.state_size = state_size
         self.action_size = action_space*num_objects
         self.learning_rate = learning_rate
@@ -866,6 +868,7 @@ class DQNetwork17:
             self.finish_tag_ = tf.reshape(self.finish_tag, [-1, num_objects])
             self.flatten = tf.concat([tf.contrib.layers.flatten(self.conv6_out_2), self.finish_tag_], -1)
             self.flatten = tf.reshape(self.flatten, [-1, self.seq_len, int(self.flatten.shape[-1])])
+            print('flatten',self.flatten)
             ## --> [1152]
             
             def lstm_layer(lstm_size, number_of_layers, batch_size):
@@ -892,25 +895,6 @@ class DQNetwork17:
             outputs, states = tf.nn.dynamic_rnn(cell, self.flatten, initial_state=init_state)
             print(outputs)
             self.rnn = tf.reshape(outputs, [-1, 256])
-
-            #self.fc1 = tf.layers.dense(inputs = self.rnn,
-            #                      units = 256,
-            #                      activation = tf.nn.elu,
-            #                           kernel_initializer=tf.contrib.layers.xavier_initializer(),
-            #                    name="fc1")
-
-            # self.fc2 = tf.layers.dense(inputs = self.fc1,
-            #                         units = 1024,
-            #                         activation = tf.nn.elu,
-            #                             kernel_initializer=tf.contrib.layers.xavier_initializer(),
-            #                     name="fc2")
-
-            # self.fc3 = tf.layers.dense(inputs = self.fc1,
-            #                         units = 1024,
-            #                         activation = tf.nn.elu,
-            #                             kernel_initializer=tf.contrib.layers.xavier_initializer(),
-            #                     name="fc3")
-            
             
             self.output_ = tf.layers.dense(inputs = self.rnn, 
                                            kernel_initializer=tf.contrib.layers.xavier_initializer(),
@@ -929,12 +913,14 @@ class DQNetwork17:
             print("actions_")
             print(self.actions_.shape)
             self.actions = tf.reshape(self.actions_, [-1, self.action_size])
+            print(self.actions)
             self.Q = tf.multiply(self.output_, self.actions, name = "Q")
             print(self.Q)
             
             # The loss is the difference between our predicted Q_values and the Q_target
             # Sum(Qtarget - Q)^2
             self.target_Q = tf.reshape(self.target_Q_, [-1, self.action_size])
+            print(self.target_Q)
             temp = tf.square(self.target_Q - self.Q)
 
             loss_details = tf.reduce_mean(tf.reshape(temp,[-1, num_objects, action_space]),axis=[0,1], name = "loss_details")
@@ -2717,3 +2703,5 @@ class DQNetwork19_eval:
             
             print(self.output_)
             print(self.output)
+
+DQNetwork17(1)

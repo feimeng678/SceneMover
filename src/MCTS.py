@@ -132,6 +132,7 @@ class MCT:
         node = self.nodedict[_id]
         return action in node.childs
 
+    #get it
     def backpropagation(self, _id):
         node = self.nodedict[_id]
         while node.faid != _id:
@@ -256,6 +257,7 @@ class MCT:
 
 def main():
     tree = MCT()
+    tree.setactionsize(5)
     tree.root.state = 0
     for i in range(10000):
         _id = tree.selection()
@@ -269,8 +271,8 @@ def main():
             tree.nodedict[child_id].value = sin(next_state)
             tree.backpropagation(child_id)
     
-    # tree.printtree()
-    tree.root.printnode()
+    tree.printtree()
+    #tree.root.printnode()
             
     
     

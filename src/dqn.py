@@ -13858,21 +13858,23 @@ def train_comb_one_frame_add_action_all_reward_loss_details_failure_cases_reinfo
     
     test_configs_set = []
     item_num_list = [5,10,15,20]
-    with open('./exp64_5.pkl','rb') as fp:
-        test_configs = pickle.load(fp)
-        test_configs_set.append(test_configs)
 
-    with open('./exp64_10.pkl','rb') as fp:
-        test_configs = pickle.load(fp)
-        test_configs_set.append(test_configs)
-    
-    with open('./exp64_15.pkl','rb') as fp:
-        test_configs = pickle.load(fp)
-        test_configs_set.append(test_configs)
-    
-    with open('./exp64_20.pkl','rb') as fp:
-        test_configs = pickle.load(fp)
-        test_configs_set.append(test_configs)
+    #import retrain model
+    # with open('./exp64_5.pkl','rb') as fp:
+    #     test_configs = pickle.load(fp)
+    #     test_configs_set.append(test_configs)
+    #
+    # with open('./exp64_10.pkl','rb') as fp:
+    #     test_configs = pickle.load(fp)
+    #     test_configs_set.append(test_configs)
+    #
+    # with open('./exp64_15.pkl','rb') as fp:
+    #     test_configs = pickle.load(fp)
+    #     test_configs_set.append(test_configs)
+    #
+    # with open('./exp64_20.pkl','rb') as fp:
+    #     test_configs = pickle.load(fp)
+    #     test_configs_set.append(test_configs)
 
 
     tensorboard_path = "tensorboard/20190619_1/"
@@ -14009,7 +14011,7 @@ def train_comb_one_frame_add_action_all_reward_loss_details_failure_cases_reinfo
         done_list.append(dones)
 
         
-        print(i,next_state.shape,nex_finish_tag_pack.shape)
+        print(" i:",i," next_state_shape:",next_state.shape," next_finish_tag_pack_shape:",nex_finish_tag_pack.shape)
 
         env_copy = deepcopy(env)
         while True:
@@ -14204,7 +14206,7 @@ def train_comb_one_frame_add_action_all_reward_loss_details_failure_cases_reinfo
         choice_index = int(action_index/action_space)
         choice_action = action_index%action_space
         reward, done = env.move(choice_index, choice_action)
-        print('step',step,'reward',reward,'done',done)
+        print(' step:',step,' reward:',reward,' done:',done)
         
 
         
@@ -18260,14 +18262,20 @@ def test():
 
 
     learning_rate = 0.00002
-    action_space = 3
+    action_space = 5
 
-    env = ENV()
+    #env = ENV()
+    ENV_scene_new_action_pre_state_penalty_conflict_heuristic_transpose_shape_poly(size=(64, 64),
+                                                                                   max_num=25)
+
+
     net = DQNetwork(learning_rate=learning_rate,action_size=action_space)
     saver = tf.train.Saver()
     with tf.Session() as sess:
         
-        saver.restore(sess,'weights/model_498800.ckpt')
+        #saver.restore(sess,'weights/model_498800.ckpt')
+        saver.restore(sess,'weights_20190619_1/model_92400.ckpt')
+
         with open('rewards.txt','w') as fp:
             for i in range(100):
                 finished = False
@@ -21559,7 +21567,7 @@ def test_MCTS_35():
 
 def test_mover_64():
     from visualization import convert
-    from visualization import convert_to_img
+    from src.visualization import convert_to_img
     from PIL import Image
     from MCTS import MCT
     import imageio
@@ -22006,7 +22014,8 @@ def test_mover_64_net(env, net, sess):# whole model
     batch_size = 1
 
     z_state = np.zeros([batch_size, dim_h])
-    init_state = (z_state, z_state)
+    # init_state = (z_state, z_state)
+    init_state = (z_state, z_state,z_state,z_state)
 
     frames = []
     last_list = []
@@ -22044,7 +22053,7 @@ def test_mover_64_net(env, net, sess):# whole model
         h_state = tree.root.h_state
         # env = tree.root.state
 
-        state = env.getstate_1()
+        state = env.getstate_3()
         tag = env.getfinished()
 
         h_state = sess.run(net.state_out, feed_dict = {net.inputs_: state.reshape(1,1,*state.shape), net.finish_tag: tag.reshape(1,1,*tag.shape), net.state_in:h_state})
@@ -22060,6 +22069,8 @@ def test_mover_64_net(env, net, sess):# whole model
 
                 # print('item',item,'direction',direction,'succ',succ)
                 if succ:
+
+                    #simulation
                     if done != 1:
                         policy = 0
                         cnt = 0
@@ -22071,7 +22082,7 @@ def test_mover_64_net(env, net, sess):# whole model
                         while (not (end_flag == 1)) and cnt < 20:
                             cnt += 1
 
-                            state = env_sim.getstate_1()
+                            state = env_sim.getstate_3()
                             tag = env_sim.getfinished()
                             # finishtag = np.pad(finish_tag,(0,obj_num-exp),"constant")
                             # print(finishtag.shape,obj_num,exp,finish_tag.shape)
@@ -22138,7 +22149,7 @@ def test_mover_64_net(env, net, sess):# whole model
             if policy == 0:
                 
                 start('io')
-                state = env_copy.getstate_1()
+                state = env_copy.getstate_3()
                 tag = env_copy.getfinished()
                 t_io += end('io')
                 
@@ -22177,6 +22188,7 @@ def test_mover_64_net(env, net, sess):# whole model
                 t_tree += end('tree')
                 break
 
+            #simulation
             if succ:
                 node_cnt += 1
                 if done != 1:
@@ -22196,7 +22208,7 @@ def test_mover_64_net(env, net, sess):# whole model
                         cnt += 1
                         
                         start('io')
-                        state = env_sim.getstate_1()
+                        state = env_sim.getstate_3()
                         tag = env_sim.getfinished()
                         t_io += end('io')
 
@@ -23104,7 +23116,7 @@ def test_mover_64_net_lstm_only_traj(env, net, sess, path = 'imgs'):# lstm only
 
 def test_mover_64_net_cnn(env, net, sess):# cnn
     from visualization import convert
-    from visualization import convert_to_img
+    from src.visualization import convert_to_img
     from PIL import Image
     from MCTS import MCT
     # import imageio
@@ -28577,8 +28589,41 @@ if __name__ == '__main__':
     # test_mover_35()
     # test_MCTS_35()
     # train_comb_one_frame_add_action_all_reward_loss_details_failure_cases_reinforce_conflict_large_most_25_random_index_NN12_poly_2_channel_net16()
-    train_comb_one_frame_add_action_all_reward_loss_details_failure_cases_reinforce_conflict_large_most_25_random_index_NN12_poly_2_channel_net17()
+
+    #train_comb_one_frame_add_action_all_reward_loss_details_failure_cases_reinforce_conflict_large_most_25_random_index_NN12_poly_2_channel_net17()
+
+    learning_rate = 0.0002
+    # Q learning hyperparameters
+    map_size = 64
+    # frame_num = 5
+    obj_num = 25
+    action_space = 5
+    state_size = [map_size, map_size, 2]
+
+    config = tf.ConfigProto()
+    config.gpu_options.per_process_gpu_memory_fraction = 0.1
+    config.gpu_options.allow_growth = True
+    sess = tf.Session(config=config)
+    sess.run(tf.initialize_all_variables())
+
+    net = DQNetwork17_eval(batch_size=1, seq_len=1, state_size=state_size, learning_rate=learning_rate,
+                           num_objects=obj_num,
+                           action_space=action_space)
+
+    env = ENV_scene_new_action_pre_state_penalty_conflict_heuristic_transpose_shape_poly(size=(map_size, map_size),
+                                                                                         max_num=obj_num)
+
+    env.randominit_crowded(np.random.randint(obj_num) + 1)
+
+    #test_mover_64_net_lstm_only_traj(env, net, sess)
+    test_mover_64_net(env, net, sess)
+    #test_mover_64()
+    #test_mover_64_net_cnn()
+    # env = ENV_scene_new_action_pre_state_penalty_conflict_heuristic_transpose_shape_poly(size=(64,64),max_num=25)
+    # test_mcts_64_rule(env)
     # test_mover_64()
+
+
     # see_heatmap()
     # test_real_MCTS_transpose_shape_2_channel()
     # test_real_MCTS_transpose_shape_2_channel_heuristic()

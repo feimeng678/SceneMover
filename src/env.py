@@ -11,7 +11,7 @@ _y = [0,0,-1,1]
 import ctypes
 from numpy.ctypeslib import ndpointer
 
-so = ctypes.CDLL('./search.so')
+so = ctypes.CDLL('/home/baifan/RL/SceneMover/src/search.so')
 search = so.search
 search.argtypes = [ndpointer(ctypes.c_int), ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int,ndpointer(ctypes.c_int),ndpointer(ctypes.c_int),ndpointer(ctypes.c_int),ndpointer(ctypes.c_int)]
 search.restype = None
